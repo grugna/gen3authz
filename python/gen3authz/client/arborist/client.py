@@ -43,7 +43,7 @@ class ArboristResponse(object):
             return
 
         try:
-            self.json = response.json()
+            self.json = response.json
         except ValueError as e:
             if self.code != 500:
                 raise ArboristError(
