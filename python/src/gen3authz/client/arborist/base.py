@@ -18,6 +18,7 @@ from ..base import AuthzClient
 from ... import string_types
 from ...utils import maybe_sync
 
+import functools
 from concurrent.futures import ThreadPoolExecutor
 
 _executor = ThreadPoolExecutor(1)
@@ -841,7 +842,12 @@ class BaseArboristClient(AuthzClient):
 
     # ¯\_(ツ)_/
     async def update_client_sync(self, loop, client_id, policies):
-        await loop.run_in_executor(_executor, self.update_client(client_id, policies))
+        await loop.run_in_executor(
+            _executor,
+            functools.partial(
+                self.update_client, data={"client_id": client_id, "policies": policies}
+            ),
+        )
 
     @maybe_sync
     async def update_client(self, client_id, policies):
