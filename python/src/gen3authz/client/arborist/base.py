@@ -18,6 +18,10 @@ from ..base import AuthzClient
 from ... import string_types
 from ...utils import maybe_sync
 
+from concurrent.futures import ThreadPoolExecutor
+
+_executor = ThreadPoolExecutor(1)
+
 
 def _escape_newlines(text):
     return text.replace("\n", "\\n")
@@ -834,6 +838,10 @@ class BaseArboristClient(AuthzClient):
             raise ArboristError(msg, response.code)
         self.logger.info("created client {}".format(client_id))
         return response.json
+
+    # ¯\_(ツ)_/
+    async def update_client_sync(self, loop, client_id, policies):
+        await loop.run_in_executor(_executor, self.update_client(client_id, policies))
 
     @maybe_sync
     async def update_client(self, client_id, policies):
