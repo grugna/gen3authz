@@ -21,7 +21,8 @@ from ...utils import maybe_sync
 import functools
 from concurrent.futures import ThreadPoolExecutor
 
-_executor = ThreadPoolExecutor(1)
+_executor_create = ThreadPoolExecutor(1)
+_executor_update = ThreadPoolExecutor(1)
 
 
 def _escape_newlines(text):
@@ -843,16 +844,19 @@ class BaseArboristClient(AuthzClient):
     # ¯\_(ツ)_/
     async def update_client_sync(self, loop, client_id, policies):
         await loop.run_in_executor(
-            _executor,
-            functools.partial(self.update_client, client_id, policies),
+            _executor_update,
+            functools.partial(self.update_client, loop, client_id, policies),
         )
 
     @maybe_sync
-    async def update_client(self, client_id, policies):
+    async def update_client(self, loop, client_id, policies):
         # retrieve existing client, create one if not found
         response = await self.get("/".join((self._client_url, quote(client_id))))
         if response.code == 404:
-            await self.create_client(client_id, policies)
+            await loop.run_in_executor(
+                _executor_create,
+                functools.partial(self.create_client, client_id, policies),
+            )
             return
 
         # unpack the result
