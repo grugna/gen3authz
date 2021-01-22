@@ -844,9 +844,7 @@ class BaseArboristClient(AuthzClient):
     async def update_client_sync(self, loop, client_id, policies):
         await loop.run_in_executor(
             _executor,
-            functools.partial(
-                self.update_client, data={"client_id": client_id, "policies": policies}
-            ),
+            functools.partial(self.update_client, client_id, policies),
         )
 
     @maybe_sync
