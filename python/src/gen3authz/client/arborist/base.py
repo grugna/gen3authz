@@ -265,6 +265,7 @@ class BaseArboristClient(AuthzClient):
         Return:
             bool: authorization response
         """
+        print("BEGIN ARBORIST CLIENT")
         if isinstance(resources, string_types):
             resources = [resources]
         if isinstance(methods, string_types):
@@ -277,9 +278,13 @@ class BaseArboristClient(AuthzClient):
                 for method in methods
             ],
         }
+        print("BEFORE RESPONSE")
         response = await self.post(self._auth_url.rstrip("/") + "/request", json=data)
+        print("AFTER RESPONSE")
+        print(response)
         if not response.successful:
             msg = "request to arborist failed: {}".format(response.error_msg)
+            print("RAISING ERROR")
             raise ArboristError(msg, response.code)
         elif response.code == 200:
             return bool(response.json["auth"])
