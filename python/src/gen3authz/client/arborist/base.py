@@ -136,6 +136,7 @@ class BaseArboristClient(AuthzClient):
         self._authz_provider = authz_provider
         self._timeout = timeout
         self._env = _Env()
+        print("INIT ARBORIST")
 
     def context(self, **kwargs):
         return self._env.make_context(kwargs)
@@ -265,7 +266,7 @@ class BaseArboristClient(AuthzClient):
         Return:
             bool: authorization response
         """
-        print("BEGIN ARBORIST CLIENT")
+        print("BEGIN ARBORIST AUTH_REQUEST")
         if isinstance(resources, string_types):
             resources = [resources]
         if isinstance(methods, string_types):
