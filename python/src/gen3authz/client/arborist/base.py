@@ -136,7 +136,6 @@ class BaseArboristClient(AuthzClient):
         self._authz_provider = authz_provider
         self._timeout = timeout
         self._env = _Env()
-        print("INIT ARBORIST")
 
     def context(self, **kwargs):
         return self._env.make_context(kwargs)
@@ -281,8 +280,7 @@ class BaseArboristClient(AuthzClient):
         }
         print("BEFORE RESPONSE")
         response = await self.post(self._auth_url.rstrip("/") + "/request", json=data)
-        print("AFTER RESPONSE")
-        print(response)
+        print(json.dumps(response))
         if not response.successful:
             msg = "request to arborist failed: {}".format(response.error_msg)
             print("RAISING ERROR")
