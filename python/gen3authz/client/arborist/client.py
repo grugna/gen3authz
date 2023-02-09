@@ -123,7 +123,7 @@ class ArboristClient(AuthzClient):
         logger=None,
         arborist_base_url="http://arborist-service/",
         authz_provider=None,
-        timeout=10,
+        timeout=25,
     ):
         self.logger = logger or get_logger("ArboristClient")
         self._base_url = arborist_base_url.strip("/")
